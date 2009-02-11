@@ -1,16 +1,16 @@
 /**
- * Copyright (c) 2009, Nexway All rights reserved.
+ * Copyright (c) 2009, Swell All rights reserved.
  * Code licensed under the BSD License:
- * http://ui.nexway.com/license.txt
+ * http://www.justswell.org/license.txt
  * version: 1.0 beta
  *
  * @author <a href="mailto:christopheeble@gmail.com">Christophe Eble</a>
  * @author <a href="mailto:alpherz@gmail.com">Jonathan Gautheron</a>
 */
 
-NXUI.setNameSpace('Api.Dom');
+Swell.setNameSpace('Core.Dom');
 
-NXUI.Api.Class({
+Swell.Core.Class({
     
     name      : 'DomObject',
     namespace : 'Api',
@@ -24,7 +24,7 @@ NXUI.Api.Class({
     }
 });
 
-NXUI.Api.Dom = new function(){
+NXUI.Core.Dom = new function(){
     
     var _registeredElements = {};
     
@@ -93,4 +93,4 @@ NXUI.Api.Dom = new function(){
 }();
 
 // Set some shorthands for the class
-NXUI.setAlias(NXUI.Api.Dom, 'Dom');
+Swell.setAlias(Swell.Core.Dom, 'Dom');
