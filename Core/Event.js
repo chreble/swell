@@ -7,7 +7,7 @@
  * @author <a href="mailto:christopheeble@gmail.com">Christophe Eble</a>
  * @author <a href="mailto:alpherz@gmail.com">Jonathan Gautheron</a>
 */
-Swell.setNameSpace('Core.Event');
+Swell.namespace('Core.Event');
 
 Swell.Core.Class({
     
