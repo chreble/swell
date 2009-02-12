@@ -15,7 +15,7 @@
  * @namespace Swell.Core
  * @requires Swell.Core
  * @static
- */
+ */y
  
 Swell.namespace('Core.Browser');
  

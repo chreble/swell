@@ -13,7 +13,7 @@ Swell.setNameSpace('Core.Dom');
 Swell.Core.Class({
     
     name      : 'DomObject',
-    namespace : 'Api',
+    namespace : 'Core',
     functions : {
     
         /**
@@ -24,18 +24,18 @@ Swell.Core.Class({
     }
 });
 
-NXUI.Core.Dom = new function(){
+Swell.Core.Dom = new function(){
     
     var _registeredElements = {};
     
     return {
     
         get : function(el, domObject) {
-            if (NXUI.Api.isString(el)) {
+            if (Swell.Core.isString(el)) {
                 return document.getElementById(el);
             }
             
-            if (NXUI.Api.isArray(el)) {
+            if (Swell.Core.isArray(el)) {
                 var _i = el.length, _els = [];
                 while (i--) {
                     _els.push(this.get(el[_i]));
@@ -45,19 +45,19 @@ NXUI.Core.Dom = new function(){
         },
         
         hasClass : function(el, className) {
-            if (NXUI.Api.isString(el)) {
+            if (Swell.Core.isString(el)) {
                 el = this.get(el);
             }
             
-            if (!NXUI.Api.isUndefined(el.nodeType)) {
+            if (!Swell.Core.isUndefined(el.nodeType)) {
                 var _expr = new RegExp('([^\s]|[^\w])?(' + className + ')([^\s]|[^\w])?');
                 return _expr.test(el.className);
             }
         },
         
         addClass : function(el, className) {
-            if (!NXUI.Api.isUndefined(el.nodeType)) {
-                if (NXUI.Api.isArray(className)) {
+            if (!Swell.Core.isUndefined(el.nodeType)) {
+                if (Swell.Core.isArray(className)) {
                     var _l = className.length;
                     while (_l--) {
                         this.addClass(el, className[_l]);
@@ -72,11 +72,11 @@ NXUI.Core.Dom = new function(){
                 return;
             }
             
-            if (NXUI.Api.isString(el)) {
+            if (Swell.Core.isString(el)) {
                 this.addClass(this.get(el), className);
             }
             
-            if (NXUI.Api.isArray(el)) {
+            if (Swell.Core.isArray(el)) {
                 var _i = el.length;
                 while (_i--) {
                     this.addClass(el[_i], className);
@@ -93,4 +93,4 @@ NXUI.Core.Dom = new function(){
 }();
 
 // Set some shorthands for the class
-Swell.setAlias(Swell.Core.Dom, 'Dom');
+Swell.alias(Swell.Core.Dom, 'Dom');
