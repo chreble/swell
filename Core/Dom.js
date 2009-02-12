@@ -8,7 +8,7 @@
  * @author <a href="mailto:alpherz@gmail.com">Jonathan Gautheron</a>
 */
 
-Swell.setNameSpace('Core.Dom');
+Swell.namespace('Core.Dom');
 
 Swell.Core.Class({
     
@@ -30,6 +30,14 @@ Swell.Core.Dom = new function(){
     
     return {
     
+        /**
+         * Returns an HTMLElement by its ID
+         *
+         * @function get
+         * @param {String|Array} el the element ID to grab, or an array of several IDs
+         * @param {Boolean} domObject returns a domObject instead of a HTMLElement (optional)
+         * @return {HTMLElement}
+        */
         get : function(el, domObject) {
             if (Swell.Core.isString(el)) {
                 return document.getElementById(el);
@@ -44,6 +52,14 @@ Swell.Core.Dom = new function(){
             }
         },
         
+        /**
+         * Check if the given element has the specified class
+         *
+         * @function hasClass
+         * @param {String|HTMLElement} el check if the given element has the specified class
+         * @param {Boolean} domObject returns a domObject instead of a HTMLElement (optional)
+         * @return {Boolean}
+        */
         hasClass : function(el, className) {
             if (Swell.Core.isString(el)) {
                 el = this.get(el);
