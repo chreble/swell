@@ -563,15 +563,9 @@ Swell.Core.Event = new function(){
                     
                     var _match = false;
                     
-                    if(!_keys.shift) {  
-                        _keys.shift = false; 
-                    }
-                    if(!_keys.alt) {    
-                        _keys.alt = false;
-                    }
-                    if(!_keys.ctrl) {
-                        _keys.ctrl = false;
-                    }
+                    _keys.shift = _keys.shift || false;  
+                    _keys.alt   = _keys.alt   || false;
+                    _keys.ctrl  = _keys.ctrl  || false;
                     
                     if (e.modifiers.shift === _keys.shift && 
                         e.modifiers.alt   === _keys.alt &&
