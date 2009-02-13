@@ -2,9 +2,6 @@
     <head>
         <title>Swell - TestCase</title>
         
-        <!--[if IE]>
-        <script type="text/javascript" src="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js"></script>
-        <![endif]-->
         
         <script type="text/javascript" src="Swell.js"></script>
         <script type="text/javascript" src="Core/Core.js"></script>
@@ -36,9 +33,22 @@
         <div class="" id="foox">Foo...</div>
         <div class="" id="bleh">Bleh...</div>
 
+        <div class="bench-result" id="bench-result">
+            
+        </div>
         
         <script type="text/javascript">
             Dom.addClass(['foox', 'bleh'], ['mystyle', 'disabled']);
+            
+            var startTime = new Date().getMilliseconds();
+            var testCount = 1000;
+            
+            while (testCount--) {
+                Dom.getStyle('foox', 'backgroundColor');
+            }
+            var endTime = new Date().getMilliseconds();
+            
+            Dom.get('bench-result').innerHTML = (endTime - startTime) + 'ms';
         </script>
         
     </body>
