@@ -107,6 +107,7 @@ Swell.Core.Dom = new function(){
             
             // at least try with querySelector (IE8)
             if (document.querySelectorAll) {
+                tagName = tagName || '';
                 return root.querySelectorAll(tagName + '.' + className);
             }
             
