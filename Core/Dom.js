@@ -55,7 +55,6 @@ Swell.Core.Dom = new function(){
             }
             
             // keep the result in cache (~40% performance gain once cached)
-            //var _regExp = new RegExp('([^\s]|[^\w])?(' + className + ')([^\s]|[^\w])?');
             var _regExp = new RegExp('(?:[^\s]|[^\w])?' + className + '(?:[^\s]|[^\w])?');
             this._registeredExpr[className] = _regExp;
             return _regExp;
@@ -174,9 +173,9 @@ Swell.Core.Dom = new function(){
         },
         
         /**
-         * Remove the class of the given element
+         * Remove the given class of the element
          *
-         * @function addClass
+         * @function removeClass
          * @param {String|Array|HTMLElement} el
          * @param {String|Array} className
         */
@@ -204,6 +203,45 @@ Swell.Core.Dom = new function(){
                 var _i = el.length;
                 while (_i--) {
                     this.removeClass(el[_i], className);
+                }
+            }
+        },
+        
+        /**
+         * Toggles element class name
+         *
+         * @function toggleClass
+         * @param {String|Array|HTMLElement} el
+         * @param {String|Array} className
+        */
+        toggleClass : function(el, className) {
+            if (!Swell.Core.isUndefined(el.nodeType)) {
+                if (Swell.Core.isArray(className)) {
+                    var _l = className.length;
+                    while (_l--) {
+                        this.toggleClass(el, className[_l]);
+                    }
+                    return;
+                }
+                
+                if (this.hasClass(el, className)) {
+                    this.removeClass(el, className);
+                } else {
+                    this.addClass(el, className);
+                }
+                return;
+            }
+            
+            // if the element is a string, we assume it's an ID
+            if (Swell.Core.isString(el)) {
+                this.toggleClass(this.get(el), className);
+            }
+            
+            // and if this is an array, we loop through it
+            if (Swell.Core.isArray(el)) {
+                var _i = el.length;
+                while (_i--) {
+                    this.toggleClass(el[_i], className);
                 }
             }
         },

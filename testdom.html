@@ -44,7 +44,7 @@
             var testCount = 1000;
             
             while (testCount--) {
-                Dom.removeClass(['foox','bleh'], ['disabled', 'mystyle']);
+                Dom.toggleClass(['foox','bleh'], ['disabled', 'mystyle']);
             }
             var endTime = new Date().getMilliseconds();
             
