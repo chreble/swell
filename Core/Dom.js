@@ -54,8 +54,9 @@ Swell.Core.Dom = new function(){
                 return this._registeredExpr[className];
             }
             
-            // keep the result in cache (~45% performance gain once cached)
-            var _regExp = new RegExp('([^\s]|[^\w])?(' + className + ')([^\s]|[^\w])?');
+            // keep the result in cache (~40% performance gain once cached)
+            //var _regExp = new RegExp('([^\s]|[^\w])?(' + className + ')([^\s]|[^\w])?');
+            var _regExp = new RegExp('(?:[^\s]|[^\w])?' + className + '(?:[^\s]|[^\w])?');
             this._registeredExpr[className] = _regExp;
             return _regExp;
         },
@@ -89,11 +90,30 @@ Swell.Core.Dom = new function(){
          * @function getElementsByClassName
          * @param {String|Array} el
          * @param {Boolean} className
-         * @return {Array}
+         * @return {Array} NodeList
         */
-        getElementsByClassName : function(el, className) {
+        getElementsByClassName : function(className, root) {
             // http://ejohn.org/blog/getelementsbyclassname-speed-comparison/
             // https://developer.mozilla.org/En/Introduction_to_using_XPath_in_JavaScript
+            root = root || document;
+            
+            // for native implementations
+            if (document.getElementsByClassName) {
+                if (Swell.Core.isString(root)) {
+                    root = this.get(root);
+                }
+                
+                return root.getElementsByClassName(className);
+            }
+            
+            var _tags = document.getElementsByTagName('*'), _nodesList = [];
+            for (var i = 0, _tag; _tag = _tags[i++];) {
+                if (this.hasClass(_tag, className)) {
+                    _nodesList.push(_tag);
+                }
+            }
+            
+            return _nodesList;
         },
         
         /**
@@ -161,8 +181,31 @@ Swell.Core.Dom = new function(){
          * @param {String|Array} className
         */
         removeClass : function(el, className) {
-            var el = this.get(el).className;
-            el = el.replace(this._expr(className), '');
+            if (!Swell.Core.isUndefined(el.nodeType)) {
+                if (Swell.Core.isArray(className)) {
+                    var _l = className.length;
+                    while (_l--) {
+                        this.removeClass(el, className[_l]);
+                    }
+                    return;
+                }
+                
+                el.className = el.className.replace(this._expr(className), '');
+                return;
+            }
+            
+            // if the element is a string, we assume it's an ID
+            if (Swell.Core.isString(el)) {
+                this.removeClass(this.get(el), className);
+            }
+            
+            // and if this is an array, we loop through it
+            if (Swell.Core.isArray(el)) {
+                var _i = el.length;
+                while (_i--) {
+                    this.removeClass(el[_i], className);
+                }
+            }
         },
         
         /**
@@ -194,14 +237,18 @@ Swell.Core.Dom = new function(){
          *
          * @function setStyle
          * @param {String|HTMLElement} el
-         * @param {String} style
+         * @param {Object} style associative object (style : value)
         */
-        setStyle : function(el, style, value) {
+        setStyle : function(el, style) {
             if (Swell.Core.isString(el)) {
                 el = this.get(el);
             }
             
-            el.style[style] = value;
+            if (Swell.Core.isObject(style)) {
+                for (var i in style) {
+                    el.style[i] = style[i];
+                }
+            }
         }
         
     }
