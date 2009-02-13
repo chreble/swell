@@ -95,7 +95,6 @@ Swell.Core.Dom = new function(){
          * @see https://developer.mozilla.org/En/DOM/Document.querySelectorAll
         */
         getElementsByClassName : function(className, root, tagName) {
-            // https://developer.mozilla.org/En/Introduction_to_using_XPath_in_JavaScript
             root = root || document;
             
             // for native implementations
@@ -112,13 +111,13 @@ Swell.Core.Dom = new function(){
             }
             
             // and for others... IE7-, Firefox 2-, Safari 3.1-, Opera 9-
-            var tagName = tagName || '*', _tags = document.getElementsByTagName(tagName), _nodesList = [];
+            var tagName = tagName || '*', _tags = document.getElementsByTagName(tagName), _nodeList = [];
             for (var i = 0, _tag; _tag = _tags[i++];) {
                 if (this.hasClass(_tag, className)) {
-                    _nodesList.push(_tag);
+                    _nodeList.push(_tag);
                 }
             }
-            return _nodesList;
+            return _nodeList;
         },
         
         /**
