@@ -2,7 +2,6 @@
     <head>
         <title>Swell - TestCase</title>
         
-        
         <script type="text/javascript" src="Swell.js"></script>
         <script type="text/javascript" src="Core/Core.js"></script>
         <script type="text/javascript" src="Core/Browser.js"></script>
@@ -30,9 +29,11 @@
         <h1>Swell Test Case</h1>
         
             
-        <div class="" id="foox">Foo...</div>
+        <div class="mystyle" id="foox">Foo...</div>
         <div class="" id="bleh">Bleh...</div>
-
+        
+        <div class="mystyle">foo</div>
+        
         <div class="bench-result" id="bench-result">
             
         </div>
@@ -44,10 +45,9 @@
             var testCount = 1000;
             
             while (testCount--) {
-                Dom.toggleClass(['foox','bleh'], ['disabled', 'mystyle']);
+                Dom.getElementsByClassName('mystyle', null);
             }
             var endTime = new Date().getMilliseconds();
-            
             Dom.get('bench-result').innerHTML = (endTime - startTime) + 'ms';
         </script>
         

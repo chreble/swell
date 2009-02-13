@@ -84,15 +84,17 @@ Swell.Core.Dom = new function(){
         },
         
         /**
-         * Returns an array of elements containing the given class name
+         * Returns an array of elements matching the given class name
          *
          * @function getElementsByClassName
-         * @param {String|Array} el
-         * @param {Boolean} className
+         * @param {String|Array} className
+         * @param {Boolean} root
+         * @param {Boolean} tagName specify the tagName for quicker lookup on browsers that doesn't implement natively this method
          * @return {Array} NodeList
+         * @see https://developer.mozilla.org/en/DOM/document.getElementsByClassName
+         * @see https://developer.mozilla.org/En/DOM/Document.querySelectorAll
         */
-        getElementsByClassName : function(className, root) {
-            // http://ejohn.org/blog/getelementsbyclassname-speed-comparison/
+        getElementsByClassName : function(className, root, tagName) {
             // https://developer.mozilla.org/En/Introduction_to_using_XPath_in_JavaScript
             root = root || document;
             
@@ -101,17 +103,21 @@ Swell.Core.Dom = new function(){
                 if (Swell.Core.isString(root)) {
                     root = this.get(root);
                 }
-                
                 return root.getElementsByClassName(className);
             }
             
-            var _tags = document.getElementsByTagName('*'), _nodesList = [];
+            // at least try with querySelector (IE8)
+            if (document.querySelectorAll) {
+                return root.querySelectorAll(tagName + '.' + className);
+            }
+            
+            // and for others... IE7-, Firefox 2-, Safari 3.1-, Opera 9-
+            var tagName = tagName || '*', _tags = document.getElementsByTagName(tagName), _nodesList = [];
             for (var i = 0, _tag; _tag = _tags[i++];) {
                 if (this.hasClass(_tag, className)) {
                     _nodesList.push(_tag);
                 }
             }
-            
             return _nodesList;
         },
         
