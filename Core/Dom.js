@@ -112,7 +112,7 @@ Swell.Core.Dom = new function(){
             }
             
             // and for others... IE7-, Firefox 2-, Safari 3.1-, Opera 9-
-            var tagName = tagName || '*', _tags = document.getElementsByTagName(tagName), _nodeList = [];
+            var tagName = tagName || '*', _tags = root.getElementsByTagName(tagName), _nodeList = [];
             for (var i = 0, _tag; _tag = _tags[i++];) {
                 if (this.hasClass(_tag, className)) {
                     _nodeList.push(_tag);
