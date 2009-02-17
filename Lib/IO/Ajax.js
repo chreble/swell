@@ -13,7 +13,6 @@ Swell.Core.Class({
     namespace : 'Lib.IO',
     inherits  : Swell.Core.CustomEventModel,
     functions : function() {
-            
         /**
          * Do not expose the internal functions below
          * to the public API
@@ -61,8 +60,10 @@ Swell.Core.Class({
             */
             xhr    : null,
             
-            /** @constructs */
-            
+            /** 
+             * @constructs
+             * @augments Swell.Core.CustomEventModel
+            */
             construct : function() {
                 var _xhr  = _getXhrObject();
                 // Exit nicely if XHR object detection failed
