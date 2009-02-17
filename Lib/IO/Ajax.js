@@ -60,20 +60,9 @@ Swell.Core.Class({
              * @property {XMLHttpRequest|NULL} Connection object
             */
             xhr    : null,
-            /**
-             * Initiates an XML HTTP Request
-             * Note : This implementation provides only asynchronous XMLHttpRequests because, 
-                      due to the inherently asynchronous nature of newwwwtworking, 
-                      there are various ways memory and events can leak when using synchronous requests.
-             *
-             * @constructs
-             *
-             * @param {String} m http transaction method either GET or POST
-             * @param {String} url full path to the remote page or resource to retrieve through XHR
-             * @param {Function} fn callback function
-             * @see http://www.quirksmode.org/blog/archives/2005/09/xmlhttp_notes_r_2.html
-             * @see 
-            */
+            
+            /** @constructs */
+            
             construct : function() {
                 var _xhr  = _getXhrObject();
                 // Exit nicely if XHR object detection failed
