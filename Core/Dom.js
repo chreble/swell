@@ -96,12 +96,12 @@ Swell.Core.Dom = new function(){
         */
         getElementsByClassName : function(className, root, tagName) {
             root = root || document.body;
+            if (Swell.Core.isString(root)) {
+                root = this.get(root);
+            }
             
             // for native implementations
             if (document.getElementsByClassName) {
-                if (Swell.Core.isString(root)) {
-                    root = this.get(root);
-                }
                 return root.getElementsByClassName(className);
             }
             
