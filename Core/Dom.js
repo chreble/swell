@@ -105,13 +105,13 @@ Swell.Core.Dom = new function(){
                 return root.getElementsByClassName(className);
             }
             
-            // at least try with querySelector (IE8)
-            if (document.querySelectorAll) {
+            // at least try with querySelector (IE8 standards mode)
+            if (root.querySelectorAll) {
                 tagName = tagName || '';
                 return root.querySelectorAll(tagName + '.' + className);
             }
             
-            // and for others... IE7-, Firefox 2-, Safari 3.1-, Opera 9-
+            // and for others... IE7-, IE8 (quirks mode), Firefox 2-, Safari 3.1-, Opera 9-
             var tagName = tagName || '*', _tags = root.getElementsByTagName(tagName), _nodeList = [];
             for (var i = 0, _tag; _tag = _tags[i++];) {
                 if (this.hasClass(_tag, className)) {
