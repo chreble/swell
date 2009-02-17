@@ -693,7 +693,7 @@ Swell.Core.Event = new function(){
                   // Checking if combination is found in function keys
                   ((_kc = Swell.Core.Event.Key.Map.Numerical.Pad[hotkey]) && _kc == keycode) ||
                   // Testing if keystroke is numeric
-                  (Swell.Core.Browser.family === Swell.Core.Browser.GECKO && (_kc = Swell.Core.Event.Key.Map.Numerical.Exceptions[Swell.Core.Browser.family].Pad[hotkey]) && _kc == keycode);
+                  (Swell.Core.Browser.isGecko && (_kc = Swell.Core.Event.Key.Map.Numerical.Exceptions[Swell.Core.Browser.family].Pad[hotkey]) && _kc == keycode);
             
             return _kc || false;
         },
@@ -1012,17 +1012,17 @@ Swell.Core.Event = new function(){
             
             // Checking if Browser is a Gecko based browser
             // Using DOMContentLoaded if available
-            if(Swell.Core.Browser.family === Swell.Core.Browser.GECKO) {
+            if(Swell.Core.Browser.isGecko) {
                 _useDOMContentLoaded = true;
             } else {
                 // Checking other browsers
-                if(Swell.Core.Browser.family === Swell.Core.Browser.WEBKIT) {
+                if(Swell.Core.Browser.isWebkit) {
                     _engineVer = parseFloat(Swell.Core.Browser.engine.version);
                     // Testing if Webkit engine supports DOMContentLoaded event
                     if(_engineVer >= 525.13) {
                         _useDOMContentLoaded = true;
                     }
-                } else if(Swell.Core.Browser.family === Swell.Core.Browser.OPERA) {
+                } else if(Swell.Core.Browser.isOpera) {
                     // Testing browser version
                     _browserVer = parseFloat(Swell.Core.Browser.version);
                     if(_browserVer >= 9) {
@@ -1035,7 +1035,7 @@ Swell.Core.Event = new function(){
                 this.add(document, 'DOMContentLoaded', fn, scope, args);
             } else {
                 // Target IE Only
-                if(Swell.Core.Browser.family === Swell.Core.Browser.IE) {
+                if(Swell.Core.Browser.isIE) {
                     if(document.location.protocol !== 'https') {
                         //Ugly hack of Dean Edwards :D
                         document.write('<scr' + 'ipt id="SwellDomReady" defer="true" ' + 'src=//:><\/scr' + 'ipt>');

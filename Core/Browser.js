@@ -21,29 +21,30 @@ Swell.namespace('Core.Browser');
  
 Swell.Core.Browser = new function(){
 
-    this.current = {};
+    //this = {};
     
-    this.current.IE        = 'IE';
-    this.current.OPERA     = 'OPERA';
-    this.current.SAFARI    = 'SAFARI';
-    this.current.AIR       = 'AIR';
-    this.current.WEBKIT    = 'WEBKIT';
-    this.current.GECKO     = 'GECKO';
-    this.current.CHROMIUM  = 'CHROMIUM';
+    this.IE        = 'IE';
+    this.OPERA     = 'OPERA';
+    this.SAFARI    = 'SAFARI';
+    this.AIR       = 'AIR';
+    this.WEBKIT    = 'WEBKIT';
+    this.GECKO     = 'GECKO';
+    this.CHROMIUM  = 'CHROMIUM';
 
         
     var useragent = navigator.userAgent;
-    this.current.useragent = useragent;
-    this.current.isMobile  = false;
-    this.current.isWin     = false;
-    this.current.isMac     = false;
-    this.current.isLinux   = false;
-    this.current.isNix     = false;
-    this.current.engine    = {};
+    this.useragent = useragent;
+    this.isMobile  = false;
+    this.isWin     = false;
+    this.isMac     = false;
+    this.isLinux   = false;
+    this.isNix     = false;
+    this.engine    = {};
     
     var match = false;
     var found = false;
     var engine;
+    var standardsMode = false;
     
     // Detecting IE Browser
     match = useragent.match(/MSIE\s([^;]*)/);
@@ -51,23 +52,27 @@ Swell.Core.Browser = new function(){
     // Must match Browser and version
     if(match && match[1]) {
     
+        if(parseInt(match[1]) >= 8 && XDomainRequest) {
+            standardsMode = true;
+        }
         // This is an IE Based browser
         // The version is stored into capturing group
         engine = useragent.match(/Trident[\s\/]([^\s;]*)/) || 'Trident';
         
-        this.current.engine.name = engine;
+        this.engine.name = engine;
         
         if(engine[1]) {
-            this.current.engine.version = engine[1];
+            this.engine.version = engine[1];
         }
         
-        this.current.browser =  this.current.IE;
-        this.current.version =  match[1];
-        this.current.family  =  this.current.IE;
+        this.browser =  this.IE;
+        this.version =  match[1];
+        this.family  =  this.IE;
+        this.standardsMode = standardsMode;
         
         // Handle IEMobile
         if(/IEMobile/.test(useragent)) {
-            this.current.isMobile = true;
+            this.isMobile = true;
         }
         
         found = true;
@@ -80,15 +85,15 @@ Swell.Core.Browser = new function(){
         if(match && match[1]) {
             
             engine = useragent.match(/Presto[\s\/]([^\s;]*)/) || 'Presto';
-            this.current.engine.name = engine;
+            this.engine.name = engine;
             
             if(engine[1]) {
-                this.current.engine.version = parseFloat(engine[1]);
+                this.engine.version = parseFloat(engine[1]);
             }
             
-            this.current.browser = this.current.OPERA;
-            this.current.version = match[1];
-            this.current.family  = this.current.OPERA;
+            this.browser = this.OPERA;
+            this.version = match[1];
+            this.family  = this.OPERA;
             
             found = true;
         }
@@ -102,15 +107,15 @@ Swell.Core.Browser = new function(){
         if(match && match[1]) {
             
             engine = useragent.match(/AppleWebKit[\s\/]([^\s;]*)/) || 'AppleWebKit';
-            this.current.engine.name = engine;
+            this.engine.name = engine;
             
             if(engine[1]) {
-                this.current.engine.version = parseFloat(engine[1]);
+                this.engine.version = parseFloat(engine[1]);
             }
             
-            this.current.browser = this.current.CHROMIUM;
-            this.current.version = match[1];
-            this.current.family  = this.current.WEBKIT;
+            this.browser = this.CHROMIUM;
+            this.version = match[1];
+            this.family  = this.WEBKIT;
             
             found = true;
         }
@@ -125,10 +130,10 @@ Swell.Core.Browser = new function(){
             // Detecting if it's Safari Web Browser
             
             engine = useragent.match(/AppleWebKit[\s\/]([^\s;]*)/) || 'AppleWebKit';
-            this.current.engine.name = engine;
+            this.engine.name = engine;
             
             if(engine[1]) {
-                this.current.engine.version = engine[1];
+                this.engine.version = engine[1];
             }
             
             // Now testing WebKit Browsers
@@ -136,12 +141,12 @@ Swell.Core.Browser = new function(){
             
             if(match && match[1]) {
                 // This is Safari
-                this.current.browser = this.current.SAFARI;
+                this.browser = this.SAFARI;
                 
                 // Safari version
                 var version = useragent.match(/Version\/([^\s]*)/);
                 if(version && version[1]) {
-                    this.current.version = version[1];
+                    this.version = version[1];
                 }
                 found = true;
             }
@@ -150,18 +155,18 @@ Swell.Core.Browser = new function(){
             match =  useragent.match(/AdobeAIR\/([^\s]*)/);
             if(match && match[1]) {
                 
-                this.current.browser = this.current.AIR;
-                this.current.version = match[1];
+                this.browser = this.AIR;
+                this.version = match[1];
                 
                 found = true;
             }
             
             // Mobile browser check
             if(/ Mobile\//.test(useragent)) {
-                this.current.isMobile = true;
+                this.isMobile = true;
             }
             
-            this.current.family  = this.current.WEBKIT;
+            this.family  = this.WEBKIT;
             found = true;
         }
     }
@@ -171,15 +176,15 @@ Swell.Core.Browser = new function(){
         match = useragent.match(/Gecko\/([^\s]*)/);
         if(match && match[1]) {
             
-            this.current.browser = this.current.GECKO;
+            this.browser = this.GECKO;
             
-            this.current.engine.name = this.current.GECKO;
-            this.current.engine.version = match[1];
-            this.current.family = this.current.GECKO;
+            this.engine.name = this.GECKO;
+            this.engine.version = match[1];
+            this.family = this.GECKO;
             
             version = useragent.match(/rv:([^\s\)]*)/);
             if(version && version[1]) {
-                this.current.version = parseFloat(version[1]);
+                this.version = parseFloat(version[1]);
             }
             
             found = true;
@@ -188,13 +193,18 @@ Swell.Core.Browser = new function(){
     
     var platform = navigator.platform;
     
-    this.current.isMac   = platform.indexOf('Mac')   !== -1;
-    this.current.isWin   = platform.indexOf('Win')   !== -1;
-    this.current.isLinux = platform.indexOf('Linux') !== -1;
+    this.isMac   = platform.indexOf('Mac')   !== -1;
+    this.isWin   = platform.indexOf('Win')   !== -1;
+    this.isLinux = platform.indexOf('Linux') !== -1;
+    this.isNix   = this.isMac || this.isLinux || false;
     
-    this.current.isNix   = this.current.isMac || this.current.isLinux || false;
+    // Shortcuts to use in conditional statements
+    this.isIE     = this.family === this.IE;
+    this.isGecko  = this.family === this.GECKO;
+    this.isWebkit = this.family === this.WEBKIT;
+    this.isOpera  = this.family === this.OPERA;
     
-    return this.current;
+    return this;
 }();
 
 // Set some shorthands for the class

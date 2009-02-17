@@ -8,25 +8,13 @@
         <script type="text/javascript" src="Core/Browser.js"></script>
         <script type="text/javascript" src="Core/Event.js"></script>
         <script type="text/javascript" src="Lib/IO/Ajax.js"></script>
-    
-        <style type="text/css">
-        
-            .mystyle {
-                background-color:#f5f5f5;
-                border:2px solid black;
-                padding:10px;
-            }
-            
-            .mystyle.disabled {
-                background-color:gray;
-                color:#ccc;
-            }
-        
-        </style>
-    
+        <!--[if IE]>
+        <script type="text/javascript" src="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js"></script>
+        <script type="text/javascript">
+            window['console'] = firebug.d.console.cmd;
+        </script>
+         <![endif]-->
     </head>
-    
-    
     <body>
         <div id="foo"></div>
         <script type="text/javascript">
