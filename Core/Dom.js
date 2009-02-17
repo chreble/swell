@@ -106,6 +106,7 @@ Swell.Core.Dom = new function(){
             }
             
             // at least try with querySelector (IE8 standards mode)
+            // about 5x quicker than below
             if (root.querySelectorAll) {
                 tagName = tagName || '';
                 return root.querySelectorAll(tagName + '.' + className);
@@ -289,10 +290,54 @@ Swell.Core.Dom = new function(){
             }
             
             if (Swell.Core.isObject(style)) {
-                for (var i in style) {
-                    el.style[i] = style[i];
+                for (var _i in style) {
+                    el.style[_i] = style[_i];
                 }
             }
+        },
+        
+        /**
+         * Sets the given element attribute
+         *
+         * @function setAttribute
+         * @param {String|HTMLElement} el
+         * @param {Object} o attributes associative object (attribute : value)
+        */
+        setAttribute : function(el, o) {
+            var _node;
+            
+            if (Swell.Core.isString(el)) {
+                el = this.get(el);
+            }
+            if (Swell.Core.isObject(o)) {
+                for (var _i = 0, _l = el.attributes.length; _i < _l; _i++) {
+                    _node = el.attributes[_i];
+                    for (var _n in o) {
+                        if (_node.name == _n) {
+                            _node.value = o[_n];
+                        } else {
+                            // we won't allow nasty things such as cssText or appending a class
+                            // they've got setStyle/addClass especially for that
+                            el.setAttribute(_n, o[_n]);
+                        }
+                    }
+                }
+            }
+        },
+        
+        /**
+         * Returns the given element attribute value
+         *
+         * @function getAttribute
+         * @param {String|HTMLElement} el
+         * @param {String} attr attribute name
+        */
+        getAttribute : function(el, attr) {
+            if (Swell.Core.isString(el)) {
+                el = this.get(el);
+            }
+            
+            return el.getAttribute(attr);
         }
         
     }
