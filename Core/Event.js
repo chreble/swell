@@ -45,12 +45,11 @@ Swell.Core.Class({
             
             /** @constructs */
             construct : function(name, scope) {
-
                 var _ev;
-                            
+                
+                this.subscribers = [];
                 // Initialize custom event name
                 this.name = name;
-                
                 // Sets current scope on window if scope is not an object
                 this.scope = (Swell.Core.isObject(scope)) ? scope : window;
                 
@@ -96,7 +95,7 @@ Swell.Core.Class({
              * @param {Mixed} [args] The arguments to pass to the callback function (optional)
             */
             subscribe : function(fn, scope, args) {
-                
+
                 if(args) {
                     if(!Swell.Core.isArray(args)) {
                         args = [args];
@@ -104,7 +103,6 @@ Swell.Core.Class({
                 } else {
                     args = [];
                 }
-                
                 // Exit nicely if fn is not a valid function reference
                 if(!Swell.Core.isFunction(fn)) {
                     return false;
@@ -115,16 +113,12 @@ Swell.Core.Class({
                 }
                 
                 var _wrapperFn;
-                
                 // We use a wrapper function for scope correction
                 // This ensure to have a proper reference with "this" keyword
                 // inside the callback function
-                
                 _wrapperFn = function() {
-                    
                     // get function arguments
                     var _funcArgs= [].slice.call(arguments, 0);
-                    
                     // Call function with cumulated arguments
                     return fn.call(scope, this.args, _funcArgs);
                 };

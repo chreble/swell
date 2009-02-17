@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <title>Swell - TestCase</title>
+        
+        
+        <script type="text/javascript" src="Swell.js"></script>
+        <script type="text/javascript" src="Core/Core.js"></script>
+        <script type="text/javascript" src="Core/Browser.js"></script>
+        <script type="text/javascript" src="Core/Event.js"></script>
+        <script type="text/javascript" src="Lib/IO/Ajax.js"></script>
+    
+        <style type="text/css">
+        
+            .mystyle {
+                background-color:#f5f5f5;
+                border:2px solid black;
+                padding:10px;
+            }
+            
+            .mystyle.disabled {
+                background-color:gray;
+                color:#ccc;
+            }
+        
+        </style>
+    
+    </head>
+    
+    
+    <body>
+        <div id="foo"></div>
+        <script type="text/javascript">
+        
+            var a = new Swell.Lib.IO.Ajax();
+            
+            a.subscribe('onInitiate', function() {
+                document.getElementById('foo').innerHTML = 'Starting...';
+            });
+            
+            a.subscribe('onProgress', function() {
+                document.getElementById('foo').innerHTML = '<img src="ajax-loader.gif" />';
+            });
+           
+            a.request('get', 'test.php', function(wrapper) {
+                document.getElementById('foo').innerHTML = wrapper.xhr.responseText;
+            });
+ 
+        </script>
+    </body>
+</html>
