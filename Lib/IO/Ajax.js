@@ -40,26 +40,21 @@ Swell.Core.Class({
         /** @lends Swell.Lib.IO.Ajax.prototype */ 
         return {
             /**
-             * @description provide reliable readyState constants
-             * 3,4 are reported correctly by all browsers
-            */
-            /**
              * @property LOADING
+             * @description used internally for checking if readyState is equal to 1 (loading)
+             * @static
             */
             LOADING       : 1,
             /**
-             * @property PROGRESS
-            */
-            PROGRESS      : 3,
-            /**
              * @property COMPLETED
+             * @description used internally for checking if readyState is equal to 4 (completed)
             */
             COMPLETED     : 4,
             /**
              * @property {XMLHttpRequest|NULL} Connection object
+             * @description Internal pointer on native XHR Object
             */
             xhr    : null,
-            
             /** 
              * @constructs
              * @augments Swell.Core.CustomEventModel
@@ -127,20 +122,33 @@ Swell.Core.Class({
             },
             
             /**
-             * @event onInitiate
-             * Fires when XmlHttpRequest is initiated
-            */
-            /**
-             * @event onProgress
-             * Fires when XmlHttpRequest is currently processed
-            */
-            /**
-             * @event onComplete
-             * Fires when XmlHttpRequest is completed
+             * Initialize events of the class
             */
             createEvents : function() {
+                this.onInitiate();
+                this.onProgress();
+                this.onComplete();
+            },
+            
+            /**
+             * @event onInitiate
+             * @description Fires when XmlHttpRequest is initiated
+            */
+            onInitiate : function() {
                 this.createEvent('onInitiate');
+            },
+            /**
+             * @event onProgress
+             * @description Fires when XmlHttpRequest is currently processed
+            */
+            onProgress : function() {
                 this.createEvent('onProgress');
+            },
+            /**
+             * @event onComplete
+             * @description Fires when XmlHttpRequest is completed
+            */
+            onComplete : function() {
                 this.createEvent('onComplete');
             }
         };
