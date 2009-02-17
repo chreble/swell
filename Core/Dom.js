@@ -95,7 +95,7 @@ Swell.Core.Dom = new function(){
          * @see https://developer.mozilla.org/En/DOM/Document.querySelectorAll
         */
         getElementsByClassName : function(className, root, tagName) {
-            root = root || document;
+            root = root || document.body;
             
             // for native implementations
             if (document.getElementsByClassName) {

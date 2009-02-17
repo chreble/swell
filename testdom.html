@@ -46,7 +46,7 @@
             var testCount = 1000;
             
             while (testCount--) {
-                Dom.getElementsByClassName('mystyle', null);
+                Dom.getElementsByClassName('mystyle');
             }
             var endTime = new Date().getMilliseconds();
             Dom.get('bench-result').innerHTML = (endTime - startTime) + 'ms';
