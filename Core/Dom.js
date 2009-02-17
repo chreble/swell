@@ -135,6 +135,11 @@ Swell.Core.Dom = new function(){
                 el = this.get(el);
             }
             
+            if (document.querySelectorAll && el.id) {
+                var _match = document.querySelectorAll('#' + el.id + '[class~=' + className + ']');
+                return _match.length > 0 ? true : false;
+            }
+            
             if (!Swell.Core.isUndefined(el.nodeType)) {
                 return this._expr(className).test(el.className);
             }
@@ -338,6 +343,31 @@ Swell.Core.Dom = new function(){
             }
             
             return el.getAttribute(attr);
+        },
+        
+        /**
+         * Returns children nodes of the given element
+         *
+         * @function getChildren
+         * @param {String|HTMLElement} el
+        */
+        getChildren : function(el) {
+            if (Swell.Core.isString(el)) {
+                el = this.get(el);
+            }
+            
+            if (!Swell.Core.isObject(el.childNodes)) {
+                return;
+            }
+            
+            var _childNodes = [], _l = el.childNodes.length;
+            while (_l--) {
+                if (!/^[\s]+$/.test(el.childNodes[_l].nodeValue)) {
+                    _childNodes.push(el.childNodes[_l]);
+                }
+            }
+            
+            return _childNodes;
         }
         
     }

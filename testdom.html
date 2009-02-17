@@ -4,9 +4,9 @@
     <head>
         <title>Swell - TestCase</title>
         
-        <!--[if IE]>
+
         <script type="text/javascript" src="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js"></script>
-        <![endif]-->
+
         
         <script type="text/javascript" src="Swell.js"></script>
         <script type="text/javascript" src="Core/Core.js"></script>
@@ -35,7 +35,11 @@
         <h1>Swell Test Case</h1>
         
             
-        <div class="mystyle" id="foox">Foo...</div>
+        <div class="mystyle" id="foox">
+            <span>foo</span>
+            <span>Boo</span>
+        Foo...
+        </div>
         <div class="" id="bleh">Bleh...</div>
         
         <div class="mystyle">foo</div>
@@ -51,7 +55,7 @@
             var testCount = 1000;
             
             while (testCount--) {
-                Dom.setAttribute('bleh', { foo : 'bar' });
+                Dom.getElementsByClassName('mystyle');
             }
             var endTime = new Date().getMilliseconds();
             Dom.get('bench-result').innerHTML = (endTime - startTime) + 'ms';
