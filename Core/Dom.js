@@ -10,22 +10,17 @@
 
 Swell.namespace('Core.Dom');
 
-Swell.Core.Class({
-    
-    name      : 'DomObject',
-    namespace : 'Core',
-    functions : {
-    
-        /**
-         * @constructor
-        */
-        construct : function(e) {
-        }
-    }
-});
-
+/**
+ * The DOM Class provides tools for cross-browser DOM operations
+ *
+ * @class Swell.Core.Dom
+ * @namespace Swell.Core
+ * @requires Swell.Core
+ * @static
+*/
 Swell.Core.Dom = new function(){
     
+    /** scope Swell.Core.Dom  */
     return {
         /**
          * Registered domObject elements

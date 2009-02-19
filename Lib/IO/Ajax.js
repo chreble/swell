@@ -36,9 +36,17 @@ Swell.Core.Class({
             }
             return _xmlHttp;
         };
+        /**
+         * @property _xRequestedWith
+         * @description Sends an X-Requested-With header to tell server that request is an XMLHttp request
+         * @private
+         * @static
+         * @see http://trac.dojotoolkit.org/ticket/5801
+        */
+        var _xRequestedWith = {'X-Requested-Width' : 'XMLHttpRequest'};
         
         /** @lends Swell.Lib.IO.Ajax.prototype */ 
-        return {
+        return {         
             /**
              * @property LOADING
              * @description used internally for checking if readyState is equal to 1 (loading)
@@ -50,16 +58,12 @@ Swell.Core.Class({
              * @description used internally for checking if readyState is equal to 4 (completed)
             */
             COMPLETED     : 4,
-            /**
-             * @property {XMLHttpRequest|NULL} Connection object
-             * @description Internal pointer on native XHR Object
-            */
-            xhr    : null,
             /** 
              * @constructs
              * @augments Swell.Core.CustomEventModel
             */
             construct : function() {
+                
                 var _xhr  = _getXhrObject();
                 // Exit nicely if XHR object detection failed
                 if(!_xhr) {
@@ -67,6 +71,11 @@ Swell.Core.Class({
                 }
                 // Assign a pointer to the current XHR object, this will help us later in the script
                 this.xhr = _xhr;
+                
+                // Maintain a stack of headers to process
+                this.headers = {};
+                
+                // Initialize events
                 this.createEvents();
             },
             
@@ -115,10 +124,34 @@ Swell.Core.Class({
                 
                 // Fire onInitiate event
                 this.fireEvent('onInitiate');
-                
+
                 // Open connection
                 this.xhr.open(m.toUpperCase(), url, true);
+                this.setHeaders(_xRequestedWith);
                 this.xhr.send(null);
+            },
+            
+            setHeader : function(name, value) {
+                if(!this.xhr) {
+                    return false;
+                }
+                // Header has not yet been attached to XmlHttp Request object
+                if(!this.headers.hasOwnProperty(name)) {
+                    this.headers[name] = value;
+                    // Set request header on the wrapped native
+                    this.xhr.setRequestHeader(name, value);
+                }
+            },
+            
+            setHeaders : function(o) {
+                if(!this.xhr) {
+                    return false;
+                }
+                if(!Swell.Core.isUndefined(o) && Swell.Core.isObject(o)) {
+                    for(var prop in o) {
+                        this.setHeader(prop, o[prop]);
+                    }
+                }
             },
             
             /**
