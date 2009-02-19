@@ -363,8 +363,107 @@ Swell.Core.Dom = new function(){
             }
             
             return _childNodes;
-        }
+        },
         
+        /**
+         * Returns viewport width
+         *
+         * @function getViewportWidth
+        */
+        getViewportWidth : function() {
+            // gecko/webkit/presto/IE7
+            if (window.innerWidth) {
+                return window.innerWidth;
+            }
+            
+            // IE standards mode
+            if (document.documentElement.clientWidth) {
+                return document.documentElement.clientWidth;
+            }
+            
+            // IE quirks mode
+            if (document.body.clientWidth) {
+                return document.body.clientWidth;
+            }
+        },
+        
+        /**
+         * Returns viewport height
+         *
+         * @function getViewportHeight
+        */
+        getViewportHeight : function() {
+            // gecko/webkit/presto/IE7
+            if (window.innerHeight) {
+                return window.innerHeight;
+            }
+            
+            // IE6- standards mode
+            if (document.documentElement.clientHeight) {
+                return document.documentElement.clientHeight;
+            }
+            
+            // IE6- quirks mode
+            if (document.body.clientHeight) {
+                return document.body.clientHeight;
+            }
+        },
+        
+        /**
+         * Returns scroll width
+         *
+         * @function getScrollWidth
+        */
+        getScrollWidth : function() {
+            // gecko/webkit/presto/IE7
+            if (window.pageXOffset) {
+                return window.pageXOffset;
+            }
+            
+            // IE6- standards mode
+            if (document.documentElement.scrollLeft) {
+                return document.documentElement.scrollLeft;
+            }
+            
+            // IE6- quirks mode
+            if (document.body.scrollLeft) {
+                return document.body.scrollLeft;
+            }
+        },
+        
+        /**
+         * Returns scroll height
+         *
+         * @function getScrollHeight
+        */
+        getScrollHeight : function() {
+            // gecko/webkit/presto/IE7
+            if (window.pageYOffset) {
+                return window.pageYOffset;
+            }
+            
+            // IE6- standards mode
+            if (document.documentElement.scrollTop) {
+                return document.documentElement.scrollTop;
+            }
+            
+            // IE6- quirks mode
+            if (document.body.scrollTop) {
+                return document.body.scrollTop;
+            }
+        },
+        
+        /**
+         * Checks if the element is a child of the given parent (EXPERIMENTAL)
+         *
+         * @function isChild
+         * @param {String} child id
+         * @param {String} parent id
+        */
+        isChild : function(child, parent) {
+            var _match = document.querySelectorAll('#' + parent + ' > #' + child);
+            return _match.length > 0 ? true : false;
+        }
     }
     
 }();
