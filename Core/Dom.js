@@ -19,74 +19,73 @@ Swell.namespace('Core.Dom');
  * @static
 */
 Swell.Core.Dom = new function(){
+    /**
+     * Registered domObject elements
+     * @property _registeredElements
+     * @type {Object}
+    */
+    var _registeredElements = {};
+    
+    /**
+     * Registered className RegExp
+     * @property _registeredExpr
+     * @type {Object}
+    */
+    var _registeredExpr = {};
+    
+    /**
+     * Returns the className regex
+     *
+     * @private
+     * @function _expr
+     * @param {String} className
+     * @return {RegExp}
+    */
+    var _expr = function(className) {
+        // if the className RegExp has already been used before...
+        if (_registeredExpr[className]) {
+            return _registeredExpr[className];
+        }
+        
+        // keep the result in cache (~40% performance gain once cached)
+        var _regExp = new RegExp('([^\s]|[^\w])?' + className + '([^\s]|[^\w])?');
+        _registeredExpr[className] = _regExp;
+        return _regExp;
+    }
+    
+    /**
+     * Executes the given function on the hidden element
+     *
+     * @private
+     * @function _checkHiddenElementProperty
+     * @param {String|HTMLElement} el
+     * @param {Function} fn
+    */
+    var _checkHiddenElementProperty = function(el, fn) {
+        var _defaultPosition   = this.getStyle(el, 'position'),
+            _defaultVisibility = this.getStyle(el, 'visibility');
+            
+        // we need to display the element to check its property
+        this.setStyle(el, {
+            'position' : 'absolute',
+            'visibility' : 'hidden',
+            'display' : ''
+        });
+        
+        property = fn.call(this, el);
+        
+        // and eventually sets the element as its original state
+        this.setStyle(el, {
+            'position' : _defaultPosition,
+            'visibility' : _defaultVisibility,
+            'display' : 'none'
+        });
+        
+        return property;
+    }
     
     /** scope Swell.Core.Dom  */
     return {
-        /**
-         * Registered domObject elements
-         * @property _registeredElements
-         * @type {Object}
-        */
-        _registeredElements : {},
-        
-        /**
-         * Registered className RegExp
-         * @property _registeredExpr
-         * @type {Object}
-        */
-        _registeredExpr : {},
-        
-        /**
-         * Returns the className regex
-         *
-         * @private
-         * @function _expr
-         * @param {String} className
-         * @return {RegExp}
-        */
-        _expr : function(className) {
-            // if the className RegExp has already been used before...
-            if (this._registeredExpr[className]) {
-                return this._registeredExpr[className];
-            }
-            
-            // keep the result in cache (~40% performance gain once cached)
-            var _regExp = new RegExp('(?:[^\s]|[^\w])?' + className + '(?:[^\s]|[^\w])?');
-            this._registeredExpr[className] = _regExp;
-            return _regExp;
-        },
-        
-        /**
-         * Executes the given function on the hidden element
-         *
-         * @private
-         * @function _checkHiddenElementProperty
-         * @param {String|HTMLElement} el
-         * @param {Function} fn
-        */
-        _checkHiddenElementProperty : function(el, fn) {
-            var _defaultPosition   = this.getStyle(el, 'position'),
-                _defaultVisibility = this.getStyle(el, 'visibility');
-                
-            // we need to display the element to check its property
-            this.setStyle(el, {
-                'position' : 'absolute',
-                'visibility' : 'hidden',
-                'display' : ''
-            });
-            
-            property = fn.call(this, el);
-            
-            // and eventually sets the element as its original state
-            this.setStyle(el, {
-                'position' : _defaultPosition,
-                'visibility' : _defaultVisibility,
-                'display' : 'none'
-            });
-            
-            return property;
-        },
-        
         /**
          * Returns an HTMLElement by its ID
          *
@@ -168,7 +167,7 @@ Swell.Core.Dom = new function(){
             }
             
             if (!Swell.Core.isUndefined(el.nodeType)) {
-                return this._expr(className).test(el.className);
+                return _expr(className).test(el.className);
             }
         },
         
@@ -228,7 +227,7 @@ Swell.Core.Dom = new function(){
                     return;
                 }
                 
-                el.className = el.className.replace(this._expr(className), '');
+                el.className = el.className.replace(_expr(className), '');
                 return;
             }
             
@@ -581,7 +580,7 @@ Swell.Core.Dom = new function(){
                 return el.offsetWidth || this.getStyle(el, 'width');
             }
             
-            return this._checkHiddenElementProperty(el, function(el) {
+            return _checkHiddenElementProperty.call(this, el, function(el) {
                 return el.clientWidth || this.getStyle(el, 'width');
             });
         },
@@ -602,7 +601,7 @@ Swell.Core.Dom = new function(){
                 return el.offsetHeight || this.getStyle(el, 'height');
             }
             
-            return this._checkHiddenElementProperty(el, function(el) {
+            return _checkHiddenElementProperty.call(this, el, function(el) {
                 return el.clientHeight || this.getStyle(el, 'height');
             });
         },
