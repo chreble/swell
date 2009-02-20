@@ -60,6 +60,7 @@ Swell.Core.Dom = new function(){
      * @function _checkHiddenElementProperty
      * @param {String|HTMLElement} el
      * @param {Function} fn
+     * @return {Mixed}
     */
     var _checkHiddenElementProperty = function(el, fn) {
         var _defaultPosition   = this.getStyle(el, 'position'),
@@ -290,6 +291,7 @@ Swell.Core.Dom = new function(){
          * @function getStyle
          * @param {String|HTMLElement} el
          * @param {String} style
+         * @return {Mixed}
          * @see http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-OverrideAndComputed
          * @see https://developer.mozilla.org/en/Gecko_DOM_Reference/Examples#Example_6.3a_getComputedStyle
         */
@@ -362,6 +364,7 @@ Swell.Core.Dom = new function(){
          * @function getAttribute
          * @param {String|HTMLElement} el
          * @param {String} attr attribute name
+         * @return {Mixed}
         */
         getAttribute : function(el, attr) {
             if (Swell.Core.isString(el)) {
@@ -376,6 +379,7 @@ Swell.Core.Dom = new function(){
          *
          * @function getChildren
          * @param {String|HTMLElement} el
+         * @return {Array} HTMLElements
         */
         getChildren : function(el) {
             if (Swell.Core.isString(el)) {
@@ -400,6 +404,7 @@ Swell.Core.Dom = new function(){
          * Returns viewport width
          *
          * @function getViewportWidth
+         * @return {Int}
         */
         getViewportWidth : function() {
             // gecko/webkit/presto/IE7
@@ -422,6 +427,7 @@ Swell.Core.Dom = new function(){
          * Returns viewport height
          *
          * @function getViewportHeight
+         * @return {Int}
         */
         getViewportHeight : function() {
             // gecko/webkit/presto/IE7
@@ -444,6 +450,7 @@ Swell.Core.Dom = new function(){
          * Returns scroll width
          *
          * @function getScrollWidth
+         * @return {Int}
         */
         getScrollWidth : function() {
             // gecko/webkit/presto/IE7
@@ -466,6 +473,7 @@ Swell.Core.Dom = new function(){
          * Returns scroll height
          *
          * @function getScrollHeight
+         * @return {Int}
         */
         getScrollHeight : function() {
             // gecko/webkit/presto/IE7
@@ -489,6 +497,7 @@ Swell.Core.Dom = new function(){
          *
          * @function getElementX
          * @param {String|HTMLElement} el
+         * @return {Int}
         */
         getElementX : function(el) {
             if (Swell.Core.isString(el)) {
@@ -508,6 +517,7 @@ Swell.Core.Dom = new function(){
          *
          * @function getElementY
          * @param {String|HTMLElement} el
+         * @return {Int}
         */
         getElementY : function(el) {
             if (Swell.Core.isString(el)) {
@@ -569,6 +579,7 @@ Swell.Core.Dom = new function(){
          *
          * @function getElementWidth
          * @param {String|HTMLElement} el
+         * @return {Int}
         */
         getElementWidth : function(el) {
             if (Swell.Core.isString(el)) {
@@ -577,11 +588,11 @@ Swell.Core.Dom = new function(){
             
             // if the element is not hidden
             if (this.getStyle(el, 'display') !== 'none') {
-                return el.offsetWidth || this.getStyle(el, 'width');
+                return el.offsetWidth || parseInt(this.getStyle(el, 'width'));
             }
             
             return _checkHiddenElementProperty.call(this, el, function(el) {
-                return el.clientWidth || this.getStyle(el, 'width');
+                return el.clientWidth || parseInt(this.getStyle(el, 'width'));
             });
         },
         
@@ -590,6 +601,7 @@ Swell.Core.Dom = new function(){
          *
          * @function getElementWidth
          * @param {String|HTMLElement} el
+         * @return {Int}
         */
         getElementHeight : function(el) {
             if (Swell.Core.isString(el)) {
@@ -598,11 +610,11 @@ Swell.Core.Dom = new function(){
             
             // if the element is not hidden
             if (this.getStyle(el, 'display') !== 'none') {
-                return el.offsetHeight || this.getStyle(el, 'height');
+                return el.offsetHeight || parseInt(this.getStyle(el, 'height'));
             }
             
             return _checkHiddenElementProperty.call(this, el, function(el) {
-                return el.clientHeight || this.getStyle(el, 'height');
+                return el.clientHeight || parseInt(this.getStyle(el, 'height'));
             });
         },
         
@@ -612,6 +624,7 @@ Swell.Core.Dom = new function(){
          * @function isChild
          * @param {String} child id
          * @param {String} parent id
+         * @return {Boolean}
         */
         isChild : function(child, parent) {
             var _match = document.querySelectorAll('#' + parent + ' > #' + child);
