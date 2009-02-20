@@ -36,6 +36,17 @@ Swell.Core.Class({
             }
             return _xmlHttp;
         };
+        
+        /**
+         * @private
+         * @description Build header definition before request
+        */
+        var _processHeaders = function() {
+            for(var h in this.headers) {
+                this.xhr.setRequestHeader(h, this.headers[h]);
+            }
+        };
+        
         /**
          * @property _xRequestedWith
          * @description Sends an X-Requested-With header to tell server that request is an XMLHttp request
@@ -128,6 +139,12 @@ Swell.Core.Class({
                 // Open connection
                 this.xhr.open(m.toUpperCase(), url, true);
                 this.setHeaders(_xRequestedWith);
+                
+                // Process headers, the function is private as no one should be able to access
+                // raw xmlhttp headers
+                _processHeaders.call(this);
+                
+                // Then call...
                 this.xhr.send(null);
             },
             
@@ -138,8 +155,6 @@ Swell.Core.Class({
                 // Header has not yet been attached to XmlHttp Request object
                 if(!this.headers.hasOwnProperty(name)) {
                     this.headers[name] = value;
-                    // Set request header on the wrapped native
-                    this.xhr.setRequestHeader(name, value);
                 }
             },
             
