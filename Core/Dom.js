@@ -39,6 +39,7 @@ Swell.Core.Dom = new function(){
         /**
          * Returns the className regex
          *
+         * @private
          * @function _expr
          * @param {String} className
          * @return {RegExp}
@@ -53,6 +54,37 @@ Swell.Core.Dom = new function(){
             var _regExp = new RegExp('(?:[^\s]|[^\w])?' + className + '(?:[^\s]|[^\w])?');
             this._registeredExpr[className] = _regExp;
             return _regExp;
+        },
+        
+        /**
+         * Executes the given function on the hidden element
+         *
+         * @private
+         * @function _checkHiddenElementProperty
+         * @param {String|HTMLElement} el
+         * @param {Function} fn
+        */
+        _checkHiddenElementProperty : function(el, fn) {
+            var _defaultPosition   = this.getStyle(el, 'position'),
+                _defaultVisibility = this.getStyle(el, 'visibility');
+                
+            // we need to display the element to check its property
+            this.setStyle(el, {
+                'position' : 'absolute',
+                'visibility' : 'hidden',
+                'display' : ''
+            });
+            
+            property = fn.call(this, el);
+            
+            // and eventually sets the element as its original state
+            this.setStyle(el, {
+                'position' : _defaultPosition,
+                'visibility' : _defaultVisibility,
+                'display' : 'none'
+            });
+            
+            return property;
         },
         
         /**
@@ -85,7 +117,7 @@ Swell.Core.Dom = new function(){
          * @param {String|Array} className
          * @param {Boolean} root
          * @param {Boolean} tagName specify the tagName for quicker lookup on browsers that doesn't implement natively this method
-         * @return {Array} NodeList
+         * @return {Array} HTMLElements
          * @see https://developer.mozilla.org/en/DOM/document.getElementsByClassName
          * @see https://developer.mozilla.org/En/DOM/Document.querySelectorAll
         */
@@ -451,6 +483,86 @@ Swell.Core.Dom = new function(){
             if (document.body.scrollTop) {
                 return document.body.scrollTop;
             }
+        },
+        
+        /**
+         * Returns element left offset
+         *
+         * @function getElementX
+         * @param {String|HTMLElement} el
+        */
+        getElementX : function(el) {
+            if (Swell.Core.isString(el)) {
+                el = this.get(el);
+            }
+            
+            // if the given element has a parent node
+            if (el.offsetParent) {
+                return el.offsetLeft + this.getElementX(el.offsetParent);
+            }
+            
+            return el.offsetLeft;
+        },
+        
+        /**
+         * Returns element top offset
+         *
+         * @function getElementY
+         * @param {String|HTMLElement} el
+        */
+        getElementY : function(el) {
+            if (Swell.Core.isString(el)) {
+                el = this.get(el);
+            }
+            
+            // if the given element has a parent node
+            if (el.offsetParent) {
+                return el.offsetTop + this.getElementY(el.offsetParent);
+            }
+            
+            return el.offsetTop;
+        },
+        
+        /**
+         * Returns element width
+         *
+         * @function getElementWidth
+         * @param {String|HTMLElement} el
+        */
+        getElementWidth : function(el) {
+            if (Swell.Core.isString(el)) {
+                el = this.get(el);
+            }
+            
+            // if the element is not hidden
+            if (this.getStyle(el, 'display') !== 'none') {
+                return el.offsetWidth || this.getStyle(el, 'width');
+            }
+            
+            return this._checkHiddenElementProperty(el, function(el) {
+                return el.clientWidth || this.getStyle(el, 'width');
+            });
+        },
+        
+        /**
+         * Returns element height
+         *
+         * @function getElementWidth
+         * @param {String|HTMLElement} el
+        */
+        getElementHeight : function(el) {
+            if (Swell.Core.isString(el)) {
+                el = this.get(el);
+            }
+            
+            // if the element is not hidden
+            if (this.getStyle(el, 'display') !== 'none') {
+                return el.offsetHeight || this.getStyle(el, 'height');
+            }
+            
+            return this._checkHiddenElementProperty(el, function(el) {
+                return el.clientHeight || this.getStyle(el, 'height');
+            });
         },
         
         /**
