@@ -524,6 +524,48 @@ Swell.Core.Dom = new function(){
         },
         
         /**
+         * Sets element left offset
+         *
+         * @function setElementX
+         * @param {String|HTMLElement} el
+         * @param {Int} pos the value in pixels
+         * @param {Boolean} add should we override its current offset or add the value?
+        */
+        setElementX: function(el, pos, add) {
+            if (Swell.Core.isString(el)) {
+                el = this.get(el);
+            }
+            
+            add = add || false;
+            if (add) {
+                return this.setStyle(el, { left : this.getElementX(el) + pos + 'px' });
+            }
+            
+            return this.setStyle(el, { left : pos + 'px' }); 
+        },
+        
+        /**
+         * Sets element top offset
+         *
+         * @function setElementY
+         * @param {String|HTMLElement} el
+         * @param {Int} pos the value in pixels
+         * @param {Boolean} add should we override its current offset or add the value?
+        */
+        setElementY : function(el, pos, add) {
+            if (Swell.Core.isString(el)) {
+                el = this.get(el);
+            }
+            
+            add = add || false;
+            if (add) {
+                return this.setStyle(el, { top : this.getElementY(el) + pos + 'px' });
+            }
+            
+            return this.setStyle(el, { top : pos + 'px' }); 
+        },
+        
+        /**
          * Returns element width
          *
          * @function getElementWidth
