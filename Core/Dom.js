@@ -85,6 +85,33 @@ Swell.Core.Dom = new function(){
         return property;
     }
     
+    /**
+     * Checks if the element is a child of the given parent by looping through the DOM
+     * We get there if we couldn't find or use querySelector
+     *
+     * @private
+     * @function _isChild
+     * @param {String|HTMLElement} child
+     * @param {String|HTMLElement} parent
+     * @return {Boolean}
+    */
+    var _isChild = function(child, parent) {
+        var _el = parentElement.firstChild;
+        if(srcElement === _el) {
+            return true;
+        } else {
+            while(_el !== parentElement.lastChild) {
+                if(_el.nextSibling !== srcElement) {
+                    _el = _el.nextSibling;
+                    continue;
+                }
+                
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /** scope Swell.Core.Dom  */
     return {
         /**
@@ -619,16 +646,34 @@ Swell.Core.Dom = new function(){
         },
         
         /**
-         * Checks if the element is a child of the given parent (EXPERIMENTAL)
+         * Checks if the element is a child of the given parent
          *
          * @function isChild
-         * @param {String} child id
-         * @param {String} parent id
+         * @param {String|HTMLElement} child
+         * @param {String|HTMLElement} parent
          * @return {Boolean}
         */
-        isChild : function(child, parent) {
-            var _match = document.querySelectorAll('#' + parent + ' > #' + child);
-            return _match.length > 0 ? true : false;
+        isChild : function(parent, child, deep) {
+            deep = deep || false;
+        
+            if (Swell.Core.isString(parent)) {
+                parent = this.get(parent);
+            }
+            
+            // lucky strike
+            child  = (!Swell.Core.isUndefined(child.id)) ? child.id : child;
+            if (Swell.Core.isString(child) && parent.querySelector) {
+                var _expr, _match;
+                if (deep) {
+                    _expr = '#' + child;
+                } else if (!Swell.Core.isUndefined(parent.id)) {
+                    _expr = '#' + parent.id + ' > #' + child;
+                    parent = document.body;
+                }
+                _match = parent.querySelector(_expr);
+                return _match !== null ? true : false;
+            }
+            
         }
     }
     

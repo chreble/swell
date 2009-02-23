@@ -2,7 +2,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US" dir="ltr">
     <head>
-        <title>So well - TestCase</title>
+        <title>TestCase</title>
         
         
         <script type="text/javascript" src="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js"></script>
@@ -27,15 +27,16 @@
             }
         
         </style>
+    
     </head>
     
     
     <body id="foob">
-        <h1>So well Test Case</h1>
+        <h1>Test Case</h1>
         
             
         <div class="mystyle" id="foox">
-            <span>foo</span>
+            <span id="atafoo">foo</span>
             <span>Boo</span>
         Foo...
         </div>
@@ -59,5 +60,6 @@
             var endTime = new Date().getMilliseconds();
             Dom.get('bench-result').innerHTML = (endTime - startTime) + 'ms';
         </script>
+        
     </body>
 </html>
