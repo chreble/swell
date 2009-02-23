@@ -99,15 +99,13 @@ Swell.Core.Dom = new function(){
         var _el = parentElement.firstChild;
         if(srcElement === _el) {
             return true;
-        } else {
-            while(_el !== parentElement.lastChild) {
-                if(_el.nextSibling !== srcElement) {
-                    _el = _el.nextSibling;
-                    continue;
-                }
-                
-                return true;
+        }
+        while(_el !== parentElement.lastChild) {
+            if(_el.nextSibling !== srcElement) {
+                _el = _el.nextSibling;
+                continue;
             }
+            return true;
         }
         return false;
     }
