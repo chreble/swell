@@ -68,21 +68,51 @@ Swell.Core.Dom = new function(){
             
         // we need to display the element to check its property
         this.setStyle(el, {
-            'position' : 'absolute',
+            'position'   : 'absolute',
             'visibility' : 'hidden',
-            'display' : ''
+            'display'    : ''
         });
         
         property = fn.call(this, el);
         
         // and eventually sets the element as its original state
         this.setStyle(el, {
-            'position' : _defaultPosition,
+            'position'   : _defaultPosition,
             'visibility' : _defaultVisibility,
-            'display' : 'none'
+            'display'    : 'none'
         });
         
         return property;
+    }
+    
+    /**
+     * Checks if the given node is really a node (and not linebreaks, spaces, tabs...)
+     *
+     * @private
+     * @function _isNode
+     * @param {String} nodeValue
+     * @return {Boolean}
+    */
+    var _isEmptyNode = function(nodeValue) {
+        if (/^[\s]+$/.test(nodeValue)) {
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Checks if the given node is a text node
+     *
+     * @private
+     * @function _isTextNode
+     * @param {String} nodeValue
+     * @return {Boolean}
+    */
+    var _isTextNode = function(node) {
+        if (node.nodeType === 3) {
+            return true;
+        }
+        return false;
     }
     
     /**
@@ -95,13 +125,15 @@ Swell.Core.Dom = new function(){
      * @param {String|HTMLElement} parent
      * @return {Boolean}
     */
-    var _isChild = function(child, parent) {
-        var _el = parentElement.firstChild;
-        if(srcElement === _el) {
+    var _isChild = function(child, parent, deep) {
+        var _el = parent.firstChild;
+        if(child === _el) {
             return true;
         }
-        while(_el !== parentElement.lastChild) {
-            if(_el.nextSibling !== srcElement) {
+        _el = _el.nextSibling;
+        while(_el !== parent.lastChild) {
+            // if the node is not the one we're seeking for...
+            if(_el !== child) {
                 _el = _el.nextSibling;
                 continue;
             }
@@ -110,10 +142,10 @@ Swell.Core.Dom = new function(){
         return false;
     }
     
-    /** scope Swell.Core.Dom  */
+    /** scope Swell.Core.Dom */
     return {
         /**
-         * Returns an HTMLElement by its ID
+         * Returns a HTMLElement by its ID
          *
          * @function get
          * @param {String|Array} el the element ID to grab, or an array of several IDs
@@ -404,9 +436,12 @@ Swell.Core.Dom = new function(){
          *
          * @function getChildren
          * @param {String|HTMLElement} el
+         * @param {Boolean} elementNodes return only element nodes
          * @return {Array} HTMLElements
         */
-        getChildren : function(el) {
+        getChildren : function(el, elementNodes) {
+            elementNodes = elementNodes || false;
+        
             if (Swell.Core.isString(el)) {
                 el = this.get(el);
             }
@@ -415,9 +450,17 @@ Swell.Core.Dom = new function(){
                 return;
             }
             
-            var _childNodes = [], _l = el.childNodes.length;
+            var _elementsClosure = function(node) {
+                if (!elementNodes) {
+                    return true;
+                }
+                if (node.nodeType === 1) {
+                    return true;
+                }
+                return false;
+            },  _childNodes = [], _l = el.childNodes.length;
             while (_l--) {
-                if (!/^[\s]+$/.test(el.childNodes[_l].nodeValue)) {
+                if (!_isEmptyNode(el.childNodes[_l].nodeValue) && _elementsClosure(el.childNodes[_l])) {
                     _childNodes.push(el.childNodes[_l]);
                 }
             }
@@ -658,6 +701,10 @@ Swell.Core.Dom = new function(){
                 parent = this.get(parent);
             }
             
+            if (!parent.hasChildNodes()) {
+                return false;
+            }
+            
             // lucky strike
             child  = (!Swell.Core.isUndefined(child.id)) ? child.id : child;
             if (Swell.Core.isString(child) && parent.querySelector) {
@@ -667,11 +714,18 @@ Swell.Core.Dom = new function(){
                 } else if (!Swell.Core.isUndefined(parent.id)) {
                     _expr = '#' + parent.id + ' > #' + child;
                     parent = document.body;
+                } else {
+                    return _isChild.call(this, parent, child, deep);
                 }
                 _match = parent.querySelector(_expr);
                 return _match !== null ? true : false;
             }
             
+            if (Swell.Core.isString(child)) {
+                child = this.get(child);
+            }
+            
+            return _isChild.call(this, parent, child, deep);
         }
     }
     
