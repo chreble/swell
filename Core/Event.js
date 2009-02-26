@@ -705,11 +705,11 @@ Swell.Core.Event = new function(){
          * @param {String|HTMLElement|Array} o the object that holds the handler
          * @param {String} type event type : click, load, etc, never prepend "on" keyword as Swell does this job for you
          * @param {Function} fns the function to suspend
-            this.remove(o, type, fn, true);
          *
         */
         suspend : function(o, type, fn) {
             /* Remove event listeners but preserve listener cache */
+            this.remove(o, type, fn, true);
         },
         
         /**
