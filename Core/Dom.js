@@ -468,7 +468,30 @@ Swell.Core.Dom = new function(){
                 }
             }
             
-            return _childNodes;
+            return _childNodes.reverse();
+        },
+        
+        /**
+         * Returns element's firstChild
+         *
+         * @function getFirstChild
+         * @param {String|HTMLElement} el
+         * @return {HTMLElement}
+        */
+        getFirstChild : function(el) {
+            return Dom.getChildren(el)[0];
+        },
+        
+        /**
+         * Returns element's lastChild
+         *
+         * @function getLastChild
+         * @param {String|HTMLElement} el
+         * @return {HTMLElement}
+        */
+        getLastChild : function(el) {
+            var _childs = Dom.getChildren(el);
+            return _childs[_childs.length - 1];
         },
         
         /**
@@ -690,6 +713,21 @@ Swell.Core.Dom = new function(){
         },
         
         /**
+         * Returns element width/height
+         *
+         * @function getElementDimensions
+         * @param {String|HTMLElement} el
+         * @return {Array}
+        */
+        getElementDimensions : function(el) {
+            if (Swell.Core.isString(el)) {
+                el = this.get(el);
+            }
+            
+            return [this.getElementWidth(el), this.getElementHeight(el)];
+        },
+        
+        /**
          * Checks if the element is a child of the given parent
          *
          * @function isChild
@@ -698,7 +736,7 @@ Swell.Core.Dom = new function(){
          * @param {Boolean} deep recursive iteration, defaults to false
          * @return {Boolean}
         */
-        isChild : function(parent, child, deep) {
+        isChild : function(child, parent, deep) {
             deep = deep || false;
         
             if (Swell.Core.isString(parent)) {
@@ -709,7 +747,7 @@ Swell.Core.Dom = new function(){
                 return false;
             }
             
-            // hope for a lucky strike
+            // aim for a lucky strike
             child  = (!Swell.Core.isUndefined(child.id)) ? child.id : child;
             if (Swell.Core.isString(child) && parent.querySelector) {
                 var _expr, _match;
@@ -719,7 +757,7 @@ Swell.Core.Dom = new function(){
                     _expr = '#' + parent.id + ' > #' + child;
                     parent = document.body;
                 } else {
-                    return _isChild.call(this, parent, child, deep);
+                    return _isChild.call(this, child, parent, deep);
                 }
                 _match = parent.querySelector(_expr);
                 return _match !== null ? true : false;
@@ -730,7 +768,7 @@ Swell.Core.Dom = new function(){
             }
             
             // last resort
-            return _isChild.call(this, parent, child, deep);
+            return _isChild.call(this, child, parent, deep);
         }
     }
     

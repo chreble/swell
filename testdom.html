@@ -55,7 +55,7 @@
             var testCount = 1000;
             
             while (testCount--) {
-                Dom.isChild('foox', 'foob');
+                Dom.getChildren('foob');
             }
             var endTime = new Date().getMilliseconds();
             Dom.get('bench-result').innerHTML = (endTime - startTime) + 'ms';
