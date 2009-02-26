@@ -86,10 +86,10 @@ Swell.Core.Dom = new function(){
     }
     
     /**
-     * Checks if the given node is really a node (and not linebreaks, spaces, tabs...)
+     * Checks if the given node is not empty (and not linebreaks, spaces, tabs...)
      *
      * @private
-     * @function _isNode
+     * @function _isEmptyNode
      * @param {String} nodeValue
      * @return {Boolean}
     */
@@ -121,8 +121,9 @@ Swell.Core.Dom = new function(){
      *
      * @private
      * @function _isChild
-     * @param {String|HTMLElement} child
-     * @param {String|HTMLElement} parent
+     * @param {HTMLElement} child
+     * @param {HTMLElement} parent
+     * @param {Boolean} deep recursive iteration
      * @return {Boolean}
     */
     var _isChild = function(child, parent, deep) {
@@ -132,11 +133,12 @@ Swell.Core.Dom = new function(){
         }
         _el = _el.nextSibling;
         while(_el !== parent.lastChild) {
-            // if the node is not the one we're seeking for...
+            // if the node is not the one we're looking for
             if(_el !== child) {
                 _el = _el.nextSibling;
                 continue;
             }
+            // found it!
             return true;
         }
         return false;
@@ -446,7 +448,8 @@ Swell.Core.Dom = new function(){
                 el = this.get(el);
             }
             
-            if (!Swell.Core.isObject(el.childNodes)) {
+            // if the element hasn't at least one child
+            if (el.childNodes.length < 1) {
                 return;
             }
             
@@ -692,6 +695,7 @@ Swell.Core.Dom = new function(){
          * @function isChild
          * @param {String|HTMLElement} child
          * @param {String|HTMLElement} parent
+         * @param {Boolean} deep recursive iteration, defaults to false
          * @return {Boolean}
         */
         isChild : function(parent, child, deep) {
@@ -705,7 +709,7 @@ Swell.Core.Dom = new function(){
                 return false;
             }
             
-            // lucky strike
+            // hope for a lucky strike
             child  = (!Swell.Core.isUndefined(child.id)) ? child.id : child;
             if (Swell.Core.isString(child) && parent.querySelector) {
                 var _expr, _match;
@@ -725,6 +729,7 @@ Swell.Core.Dom = new function(){
                 child = this.get(child);
             }
             
+            // last resort
             return _isChild.call(this, parent, child, deep);
         }
     }
