@@ -58,6 +58,8 @@ Swell.Core.Class({
         
         /** @lends Swell.Lib.IO.Ajax.prototype */ 
         return {         
+            
+            XJSON         : 'X-JSON',
             /**
              * @property LOADING
              * @description used internally for checking if readyState is equal to 1 (loading)
@@ -103,9 +105,9 @@ Swell.Core.Class({
             */
             request : function(m, url, fn, scope, args) {
                 
-                var _args       = args || null,
+                var _args       = args  || null,
                     _scope      = scope || null,
-                    that    = this;
+                    that        = this;
 
                 // Exit nicely if fn is not a function
                 if(!Swell.Core.isFunction(fn)) {
@@ -126,10 +128,36 @@ Swell.Core.Class({
                     else if(that.xhr.readyState === that.COMPLETED) {
                         // Detach all subscribers of progress event
                         that.unsubscribe('onProgress');
+                        
+                        that.status       = (that.xhr.status == 1223) ? 204 : that.xhr.status;
+                        that.statusText   = (that.xhr.status == 1223) ? 'No Content' : that.xhr.statusText;
+                        
+                        // Map properties/methods of the wrapped native
+                        that.responseText = that.xhr.responseText;
+                        that.responseXML  = that.xhr.responseXML;
+                        
+                        // the server sents a JSON header, try to parse natively the JSON
+                        // response
+                        if(that.getResponseHeader(that.XJSON)) {
+                            var _json = that.responseText;
+                            // We have the native object yeeha!!
+                            if(!Swell.Core.isUndefined(JSON) && Swell.Core.isObject(JSON)) {
+                                try {
+                                    _json = JSON.parse(_json);
+                                    that.responseJSON = _json;
+                                } catch (ex) {}
+                            } else {
+                                // We do not have native Json
+                                // @todo
+                            }
+                        }
+                        
                         // Fire complete event
                         that.fireEvent('onComplete');
                         // Execute callback function with the given scope and args
                         fn.call(_scope, that, _args);
+                        
+                        that.xhr = null;
                     }
                 };
                 
@@ -148,6 +176,16 @@ Swell.Core.Class({
                 this.xhr.send(null);
             },
             
+            getResponseHeader : function(name) {
+                var _val = false;
+                if(this.xhr && this.xhr.readyState === this.COMPLETED) {
+                    if((_val = this.xhr.getResponseHeader(name))) {
+                        return _val;
+                    }
+                }
+                return false;
+            },
+
             setHeader : function(name, value) {
                 if(!this.xhr) {
                     return false;
