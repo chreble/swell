@@ -533,6 +533,9 @@ Swell.Core.Event = new function(){
          * 
         */
         addKeyListener : function(o, keys, callback, scope, args, stop) {
+            
+            var _hotkeys;
+            
             if(!Swell.Core.isFunction(callback)) {
                 return false;
             }
@@ -547,11 +550,11 @@ Swell.Core.Event = new function(){
                 // If String, it's a hotkey combination
                 if(Swell.Core.isString(_keys)) {
                     //Check if it's a valid hotkey (must match modifiers and keys)
-                    if(this.isValidHotKey(e.modifiers, e.getKeyCode(), _keys)) {
+                    if((_hotkeys = this.isValidHotKey(e.modifiers, e.getKeyCode(), _keys))) {
                         if(stop) {
                             e.stop();
                         }
-                        callback.call(scope, e, args);
+                        callback.call(scope, e, _hotkeys, args);
                     }
                 } else if(Swell.Core.isObject(_keys)) {
                     
@@ -598,7 +601,7 @@ Swell.Core.Event = new function(){
          * @return {Boolean} true if the current event matches the hotkey
         */
         isValidHotKey : function(modifiers, keycode, str) {
-            var _combinations = [], _n, _keyCode, _hasModifier = false, _hotKeyModifier_ = {}, _p, _match = false, _kc;
+            var _combinations = [], _n, _keyCode, _hasModifier = false, _hotKeyModifier_ = {}, _p, _match = false, _kc, _validCombinations = [];
             // Strip spaces
             str = str.replace(/\s/g, '');
             // At first detect if there's a combination operator
@@ -625,6 +628,7 @@ Swell.Core.Event = new function(){
                         if(_kc) {
                             if(!_keyCode) {
                                 _keyCode = _kc;
+                                _validCombinations.push(_combinations[_n]);
                             }
                         }
                     }
@@ -642,6 +646,7 @@ Swell.Core.Event = new function(){
                         if(_kc) {
                             if(!_keyCode) {
                                 _keyCode = _kc;
+                                _validCombinations.push(_combinations[_n]);
                             }
                         }
                     }
@@ -653,6 +658,7 @@ Swell.Core.Event = new function(){
                     if(_kc) {
                         _match = true;
                         _keyCode = _kc;
+                        _validCombinations.push(str);
                     }
                 }
             }
@@ -670,7 +676,7 @@ Swell.Core.Event = new function(){
                     }
                 }
             }
-            return _match;
+            return (_match) ? _validCombinations : false;
         },
         
         /**
