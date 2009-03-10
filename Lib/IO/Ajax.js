@@ -107,7 +107,7 @@ Swell.Core.Class({
                 
                 var _args       = args  || null,
                     _scope      = scope || null,
-                    that        = this;
+                    _qs         = [], that = this;
 
                 // Exit nicely if fn is not a function
                 if(!Swell.Core.isFunction(fn)) {
@@ -135,21 +135,17 @@ Swell.Core.Class({
                         // Map properties/methods of the wrapped native
                         that.responseText = that.xhr.responseText;
                         that.responseXML  = that.xhr.responseXML;
+                        that.responseJSON = {};
                         
                         // the server sents a JSON header, try to parse natively the JSON
                         // response
                         if(that.getResponseHeader(that.XJSON)) {
                             var _json = that.responseText;
-                            // We have the native object yeeha!!
-                            if(!Swell.Core.isUndefined(JSON) && Swell.Core.isObject(JSON)) {
-                                try {
-                                    _json = JSON.parse(_json);
-                                    that.responseJSON = _json;
-                                } catch (ex) {}
-                            } else {
-                                // We do not have native Json
-                                // @todo
-                            }
+                            try {
+                                // We have the native object yeeha!!
+                                _json = JSON.parse(_json);
+                                that.responseJSON = _json;
+                            } catch (ex) {}
                         }
                         
                         // Fire complete event
@@ -163,6 +159,19 @@ Swell.Core.Class({
                 
                 // Fire onInitiate event
                 this.fireEvent('onInitiate');
+                
+                
+                // Prepare arguments
+                if(Swell.Core.isObject(_args)) {
+                    var queryStringFirstOp = '?';
+                    if(url.indexOf('?') !== -1) {
+                        queryStringFirstOp = '&';
+                    }
+                    for(var k in _args) {
+                        _qs.push(k  + '=' + encodeURIComponent(_args[k]));
+                    }
+                    url += queryStringFirstOp + _qs.join('&');
+                }
 
                 // Open connection
                 this.xhr.open(m.toUpperCase(), url, true);

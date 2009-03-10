@@ -24,10 +24,8 @@
             if (Swell.Core.isObject(parent)) {
                 
                 Class.extending = true;
-                
-                func.prototype = new parent();
-                func.superclass = parent.prototype;
-                
+                func.prototype  = new parent(arguments);
+
                 delete Class.extending;
             }
             var mixins = [];
@@ -66,6 +64,7 @@
                 var ancestor = dest[fname],
                 descendent = src[fname],
                 method = descendent;
+                
                 descendent = function() {
                     var ref = this.parent;
                     this.parent = ancestor;
@@ -337,7 +336,8 @@
         }
         
         for(_n = 0, _l = _args.length; _n < _l; _n++) {
-            _ns[_ns.name] = Class.extend(_ns[_ns.name], _args[_n].prototype);
+            var _func = Class.extend(_ns[_ns.name], _args[_n].prototype);
+            _ns[_ns.name] = _func;
         }
     };
 

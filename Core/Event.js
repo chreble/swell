@@ -226,92 +226,96 @@ Swell.Core.Class({
     
     name : 'CustomEventModel',
     namespace : 'Core',
-    functions : {
-        /**
-         * Constructor, initialize listeners, and construct the parent class
-         *
-         * @function construct
-         * @constructor
-        */
-        construct : function(){
-            this.listeners = {};
-            this.parent();
-        },
+    functions : function() {
         
-        /**
-         * Create a new Custom event
-         *
-         * @function createEvent
-         * @param {String} name Name of the Event e.g. "initialized"
-         * @param {Object} [scope] Default Execution scope of the callback function (optional)
-        */
-        createEvent : function(name, scope) {
-            // Address potential scope issues
-            scope = scope || this;
-            //Override existing listeners, create a stack when a new one is created
-            this.listeners[name] = new Swell.Core.CustomEvent(name, scope);
-        },
+        var _listeners = {};
         
-        /**
-         * Fire a Custom event registered with createEvent
-         *
-         * @function fireEvent
-         * @param {String} name Name of the Event to fire e.g. "initialized"
-         * @param {Mixed} [args] Arguments to pass to the callback function (optional)
-        */
-        fireEvent : function(name, args) {
-            var _listener;
-            _listener = this.listeners[name];
+        return {
+            /**
+             * Constructor, initialize listeners, and construct the parent class
+             *
+             * @function construct
+             * @constructor
+            */
+            construct : function(){
+                this.parent();
+            },
+            
+            /**
+             * Create a new Custom event
+             *
+             * @function createEvent
+             * @param {String} name Name of the Event e.g. "initialized"
+             * @param {Object} [scope] Default Execution scope of the callback function (optional)
+            */
+            createEvent : function(name, scope) {
+                // Address potential scope issues
+                scope = scope || this;
+                //Override existing listeners, create a stack when a new one is created
+                _listeners[name] = new Swell.Core.CustomEvent(name, scope);
+            },
+            
+            /**
+             * Fire a Custom event registered with createEvent
+             *
+             * @function fireEvent
+             * @param {String} name Name of the Event to fire e.g. "initialized"
+             * @param {Mixed} [args] Arguments to pass to the callback function (optional)
+            */
+            fireEvent : function(name, args) {
+                var _listener;
+                _listener = _listeners[name];
 
-            if (_listener) {
-                _listener.fire(args);
-            }
-        },
-        
-        /**
-         * Subscribe to a Custom event registered with createEvent
-         *
-         * @function subscribe
-         * @param {String} name Name of the Event to subscribe e.g. "initialized"
-         * @param {Function} callback Callback function to call when the event fires
-         * @param {Object} [scope] Overrides default execution scope of the callback function (optional)
-         * @param {Mixed} [args] Arguments to pass to the callback function (optional)
-        */
-        subscribe : function(name, callback, scope, args) {
-            var _listener;
-            _listener = this.listeners[name];
+                if (_listener) {
+                    _listener.fire(args);
+                }
+            },
+            
+            /**
+             * Subscribe to a Custom event registered with createEvent
+             *
+             * @function subscribe
+             * @param {String} name Name of the Event to subscribe e.g. "initialized"
+             * @param {Function} callback Callback function to call when the event fires
+             * @param {Object} [scope] Overrides default execution scope of the callback function (optional)
+             * @param {Mixed} [args] Arguments to pass to the callback function (optional)
+            */
+            subscribe : function(name, callback, scope, args) {
+                var _listener;
+                _listener = _listeners[name];
 
-            if (_listener) {
-                _listener.subscribe(callback, scope, args);
+                if (_listener) {
+                    _listener.subscribe(callback, scope, args);
+                }
+            },
+            
+            /**
+             * Unsubscribe to a Custom event registered with createEvent
+             *
+             * @function unsubscribe
+             * @param {String} name Name of the Event to unsubscribe e.g. "initialized"
+             * @param {Function} [callback] Callback function to unsubscribe (optional)
+            */
+            unsubscribe : function(name, callback) {
+                if(_listeners.hasOwnProperty(name) && !callback) {
+                    // Unsubscribe all
+                    _listeners[name].unsubscribeAll();
+                } else {
+                    _listeners[name].unsubscribe(callback);
+                }
+            },
+            
+            /**
+             * Return all custom events
+             *
+             * @function getEvents
+             * @return {Swell.Core.CustomEvent[]}
+            */
+            getEvents : function() {
+                return _listeners;
             }
-        },
-        
-        /**
-         * Unsubscribe to a Custom event registered with createEvent
-         *
-         * @function unsubscribe
-         * @param {String} name Name of the Event to unsubscribe e.g. "initialized"
-         * @param {Function} [callback] Callback function to unsubscribe (optional)
-        */
-        unsubscribe : function(name, callback) {
-            if(this.listeners.hasOwnProperty(name) && !callback) {
-                // Unsubscribe all
-                this.listeners[name].unsubscribeAll();
-            } else {
-                this.listeners[name].unsubscribe(callback);
-            }
-        },
-        
-        /**
-         * Return all custom events
-         *
-         * @function getEvents
-         * @return {Swell.Core.CustomEvent[]}
-        */
-        getEvents : function() {
-            return this.listeners;
         }
-    }
+    }()
 });
 
 
@@ -549,12 +553,18 @@ Swell.Core.Event = new function(){
                 
                 // If String, it's a hotkey combination
                 if(Swell.Core.isString(_keys)) {
-                    //Check if it's a valid hotkey (must match modifiers and keys)
-                    if((_hotkeys = this.isValidHotKey(e.modifiers, e.getKeyCode(), _keys))) {
-                        if(stop) {
-                            e.stop();
+                    // Check if hotkey is not the universal selector *
+                    if(_keys !== '*') {
+                        //Check if it's a valid hotkey (must match modifiers and keys)
+                        if((_hotkeys = this.isValidHotKey(e.modifiers, e.getKeyCode(), _keys))) {
+                            if(stop) {
+                                e.stop();
+                            }
+                            callback.call(scope, e, _hotkeys, args);
                         }
-                        callback.call(scope, e, _hotkeys, args);
+                    } else {
+                        // This is the universal selector, try to map the keycode with the keymapper
+                        //if((_mappedKey = this.getCharCodeFromHotKey())
                     }
                 } else if(Swell.Core.isObject(_keys)) {
                     
@@ -688,6 +698,36 @@ Swell.Core.Event = new function(){
          * @return {Int|Boolean}
         */
         getCharCodeFromHotKey : function(hotkey, keycode) {
+            var _kc;
+            _kc = ((_kc = Swell.Core.Event.Key.Map.Alphabetical[hotkey]) && _kc == keycode)  ||
+                  // Checking if combination is found in alphabetical keys
+                  ((_kc = Swell.Core.Event.Key.Map.Special[hotkey]) && _kc == keycode)       ||
+                  // Checking If combination is found in special keys
+                  ((_kc = Swell.Core.Event.Key.Map.Navigation[hotkey]) && _kc == keycode)    ||
+                  // Checking if combination is found in navigation keys
+                  ((_kc = Swell.Core.Event.Key.Map.Functions[hotkey]) && _kc == keycode)     ||
+                  // Checking if combination is found in function keys
+                  ((_kc = Swell.Core.Event.Key.Map.Numerical.Pad[hotkey]) && _kc == keycode) ||
+                  // Testing if keystroke is numeric
+                  (Swell.Core.Browser.isGecko && (_kc = Swell.Core.Event.Key.Map.Numerical.Exceptions[Swell.Core.Browser.family].Pad[hotkey]) && _kc == keycode);
+            
+            return _kc || false;
+        },
+        
+        /**
+         * Obtain a Keycode from its string representation using the KeyMapper
+         *
+         * @function getCharCodeFromHotKey
+         * @param {String} hotkey string representation of the hotkey e.g. space
+         * @param {Int} keycode (compared internally with the one returned by the keymapper)
+         * @return {Int|Boolean}
+        */
+        getKeyNameFromCharCode : function(keycode) {
+            
+            var _alphabeticalKeyMap, _specialKeyMap, _navKeyMap, _funcKeyMap, _numKeyMap;
+            // Using Swell in
+            
+            
             var _kc;
             _kc = ((_kc = Swell.Core.Event.Key.Map.Alphabetical[hotkey]) && _kc == keycode)  ||
                   // Checking if combination is found in alphabetical keys
